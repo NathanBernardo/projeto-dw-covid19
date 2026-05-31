@@ -2,7 +2,7 @@
 
 > Projeto acadêmico desenvolvido na disciplina **Banco e Armazém de Dados em Ciências de Dados** — FATEC Jundiaí (Deputado Ary Fossen)
 
-## 🔗 [Ver painel de resultados analíticos →](https://SEU-USUARIO.github.io/projeto-dw-covid19)
+## 🔗 [Ver painel de resultados analíticos →](https://nathanbernardo.github.io/projeto-dw-covid19)
 
 ---
 

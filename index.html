@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DW COVID-19 — Resultados Analíticos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f12;
+      --bg2: #13161a;
+      --bg3: #1a1e24;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.13);
+      --text: #e8eaf0;
+      --muted: #7a8494;
+      --accent: #00d4a0;
+      --accent2: #ff6b6b;
+      --accent3: #ffa94d;
+      --accent4: #74c0fc;
+      --accent5: #b197fc;
+      --font: 'IBM Plex Sans', sans-serif;
+      --mono: 'IBM Plex Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 2.5rem 0 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 200px;
+      background: radial-gradient(ellipse, rgba(0,212,160,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(0,212,160,0.3);
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 1.25rem;
+    }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+    h1 span { color: var(--accent); }
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 500px;
+      margin: 0 auto 1.5rem;
+    }
+    .authors {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+    .author-chip {
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--border2);
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-family: var(--mono);
+    }
+
+    /* LAYOUT */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* KPI STRIP */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 2.5rem 0;
+    }
+    .kpi {
+      background: var(--bg2);
+      padding: 1.25rem 1rem;
+      text-align: center;
+    }
+    .kpi-val {
+      font-family: var(--mono);
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--accent);
+      display: block;
+      line-height: 1.2;
+    }
+    .kpi-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 2.5rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* QA CARDS */
+    .qa-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .qa-card.open { border-color: var(--border2); }
+    .qa-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      background: var(--bg2);
+      transition: background 0.15s;
+    }
+    .qa-header:hover { background: var(--bg3); }
+    .qa-num {
+      width: 26px; height: 26px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .qa-question {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .qa-arrow {
+      color: var(--muted);
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: transform 0.2s;
+    }
+    .qa-card.open .qa-arrow { transform: rotate(180deg); }
+    .qa-body {
+      display: none;
+      padding: 1.25rem;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+    .qa-card.open .qa-body { display: block; }
+    .qa-answer {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+
+    /* STAT GRID */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      margin: 1rem 0;
+    }
+    .stat-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+    }
+    .stat-box .val {
+      font-family: var(--mono);
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--text);
+      display: block;
+    }
+    .stat-box .lbl {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+    .stat-box .sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* INSIGHT BOX */
+    .insight {
+      font-size: 13px;
+      color: var(--text);
+      background: rgba(0,212,160,0.05);
+      border-left: 2px solid var(--accent);
+      padding: 0.75rem 1rem;
+      border-radius: 0 8px 8px 0;
+      margin-top: 0.75rem;
+      line-height: 1.6;
+    }
+
+    /* BAR CHART */
+    .bar-chart { margin: 1rem 0; }
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 7px;
+    }
+    .bar-label { font-size: 12px; color: var(--muted); min-width: 72px; font-family: var(--mono); }
+    .bar-track { flex: 1; background: var(--bg3); border-radius: 3px; height: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+    .bar-val { font-size: 12px; font-family: var(--mono); color: var(--text); min-width: 52px; text-align: right; }
+
+    /* CFR TABLE */
+    .cfr-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1rem 0; }
+    .cfr-table th {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-align: left;
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cfr-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .cfr-table tr:last-child td { border-bottom: none; }
+    .cfr-table .fase { color: var(--text); font-weight: 500; }
+    .cfr-val { font-family: var(--mono); }
+
+    /* TAGS */
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.75rem; }
+    .tag {
+      font-size: 11px;
+      font-family: var(--mono);
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      text-align: center;
+      margin-top: 3rem;
+    }
+    footer p { font-size: 12px; color: var(--muted); }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="badge">FATEC Jundiaí — 2025</div>
+    <h1>Data Warehouse <span>COVID-19</span></h1>
+    <p class="subtitle">Análise da pandemia no Brasil (2020–2024) usando DuckDB, modelo estrela e Python</p>
+    <div class="authors">
+      <span class="author-chip">Mariana Costa de Mello</span>
+      <span class="author-chip">Michelle de Sales Silva</span>
+      <span class="author-chip">Nathan B. N. de Melo</span>
+      <span class="author-chip">Stephan L. M. dos Santos</span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="kpi-strip">
+    <div class="kpi"><span class="kpi-val">37,5M</span><div class="kpi-label">casos totais</div></div>
+    <div class="kpi"><span class="kpi-val">702.116</span><div class="kpi-label">mortes totais</div></div>
+    <div class="kpi"><span class="kpi-val">1,28M</span><div class="kpi-label">pico diário</div></div>
+    <div class="kpi"><span class="kpi-val">88,1%</span><div class="kpi-label">cobertura vacinal</div></div>
+    <div class="kpi"><span class="kpi-val">1.673</span><div class="kpi-label">dias de dados</div></div>
+  </div>
+
+  <div class="section-title">perguntas analíticas — respostas</div>
+
+  <!-- Q1 -->
+  <div class="qa-card" id="q1">
+    <div class="qa-header" onclick="toggle('q1')">
+      <div class="qa-num" style="background:rgba(0,212,160,0.12);color:var(--accent);">01</div>
+      <div class="qa-question">Como evoluíram os casos e mortes no Brasil? É possível identificar as ondas da pandemia?</div>
+      <span class="qa-arrow">&#8964;</span>
+    </div>
+    <div class="qa-body">
+      <p class="qa-answer">Sim — os dados mostram claramente 4 grandes ondas de contágio. Cada onda tem um pico identificável de novos casos e mortes, associado a uma variante dominante diferente.</p>
+      <div class="stat-grid">
+        <div class="stat-box"><span class="val">Mar–Dez 2020</span><div class="lbl">1ª Onda</div><div class="sub">Cepa original</div></div>
+        <div class="stat-box"><span class="val">Jan–Jul 2021</span><div class="lbl">2ª Onda</div><div class="sub">Variante Gama — mais letal</div></div>
+        <div class="stat-box"><span class="val">Jan–Jun 2022</span><div class="lbl">3ª Onda</div><div class="sub">Ômicron — mais casos, menos mortes</div></div>
+        <div class="stat-box"><span class="val">Jul 2022+</span><div class="lbl">Fase Endêmica</div><div class="sub">Casos e mortes em queda</div></div>
+      </div>
+      <div class="insight">A 2ª Onda (variante Gama) foi a mais letal. A Ômicron teve muito mais casos, mas muito menos mortes por caso — graças ao avanço da vacinação.</div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="qa-card" id="q2">
+    <div class="qa-header" onclick="toggle('q2')">
+      <div class="qa-num" style="background:rgba(255,107,107,0.12);color:var(--accent2);">02</div>
+      <div class="qa-question">Quais foram os 10 meses com maior número de mortes registradas no Brasil?</div>
+      <span class="qa-arrow">&#8964;</span>
+    </div>
+    <div class="qa-body">
+      <p class="qa-answer">Os 10 meses mais letais estão concentrados em 2021, durante a Segunda Onda com a variante Gama. Apenas 2 meses de 2020 entram no ranking.</p>
+      <div class="bar-chart">
+        <div class="bar-row"><span class="bar-label">Abr/2021</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent2);"></div></div><span class="bar-val">79.304</span></div>
+        <div class="bar-row"><span class="bar-label">Mai/2021</span><div class="bar-track"><div class="bar-fill" style="width:91%;background:var(--accent2);"></div></div><span class="bar-val">72.629</span></div>
+        <div class="bar-row"><span class="bar-label">Mar/2021</span><div class="bar-track"><div class="bar-fill" style="width:68%;background:var(--accent2);"></div></div><span class="bar-val">54.277</span></div>
+        <div class="bar-row"><span class="bar-label">Jun/2021</span><div class="bar-track"><div class="bar-fill" style="width:66%;background:var(--accent2);"></div></div><span class="bar-val">52.097</span></div>
+        <div class="bar-row"><span class="bar-label">Jul/2021</span><div class="bar-track"><div class="bar-fill" style="width:47%;background:#ff9999;"></div></div><span class="bar-val">37.198</span></div>
+        <div class="bar-row"><span class="bar-label">Ago/2020</span><div class="bar-track"><div class="bar-fill" style="width:43%;background:var(--accent3);"></div></div><span class="bar-val">34.266</span></div>
+        <div class="bar-row"><span class="bar-label">Jan/2021</span><div class="bar-track"><div class="bar-fill" style="width:41%;background:var(--accent2);"></div></div><span class="bar-val">32.178</span></div>
+        <div class="bar-row"><span class="bar-label">Fev/2021</span><div class="bar-track"><div class="bar-fill" style="width:38%;background:var(--accent2);"></div></div><span class="bar-val">30.169</span></div>
+        <div class="bar-row"><span class="bar-label">Ago/2021</span><div class="bar-track"><div class="bar-fill" style="width:38%;background:var(--accent);"></div></div><span class="bar-val">29.986</span></div>
+        <div class="bar-row"><span class="bar-label">Jul/2020</span><div class="bar-track"><div class="bar-fill" style="width:37%;background:var(--accent3);"></div></div><span class="bar-val">29.277</span></div>
+      </div>
+      <div class="tags">
+        <span class="tag" style="color:var(--accent2);border-color:rgba(255,107,107,0.3);">■ 2ª Onda (Gama)</span>
+        <span class="tag" style="color:var(--accent3);border-color:rgba(255,169,77,0.3);">■ 1ª Onda</span>
+        <span class="tag" style="color:var(--accent);border-color:rgba(0,212,160,0.3);">■ Vacinação em Massa</span>
+      </div>
+      <div class="insight">Abril/2021 foi o pior mês da pandemia no Brasil — quase 80 mil mortes em 30 dias. 8 dos 10 piores meses são de 2021.</div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="qa-card" id="q3">
+    <div class="qa-header" onclick="toggle('q3')">
+      <div class="qa-num" style="background:rgba(116,192,252,0.12);color:var(--accent4);">03</div>
+      <div class="qa-question">Como a vacinação se compara com a queda de casos e mortes, mês a mês?</div>
+      <span class="qa-arrow">&#8964;</span>
+    </div>
+    <div class="qa-body">
+      <p class="qa-answer">A correlação é clara: conforme a cobertura vacinal aumentava, as mortes caíam — mesmo com o surgimento de novas variantes. A vacinação começou em janeiro de 2021 com cobertura próxima de zero.</p>
+      <div class="stat-grid">
+        <div class="stat-box"><span class="val">~1%</span><div class="lbl">Jan/2021</div><div class="sub">início da vacinação</div></div>
+        <div class="stat-box"><span class="val">63%</span><div class="lbl">Ago/2021</div><div class="sub">vacinação em massa</div></div>
+        <div class="stat-box"><span class="val">76%</span><div class="lbl">Dez/2021</div><div class="sub">antes da Ômicron</div></div>
+        <div class="stat-box"><span class="val">88,1%</span><div class="lbl">Final (2024)</div><div class="sub">cobertura final</div></div>
+      </div>
+      <div class="insight">Enquanto a cobertura vacinal subia de 1% para 88%, as mortes mensais caíram de ~79 mil (pico em abr/2021) para menos de 4 mil no início de 2023 — mesmo com a chegada da Ômicron, que teve muito mais casos.</div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="qa-card" id="q4">
+    <div class="qa-header" onclick="toggle('q4')">
+      <div class="qa-num" style="background:rgba(177,151,252,0.12);color:var(--accent5);">04</div>
+      <div class="qa-question">Como a taxa de mortalidade (CFR) se comportou antes, durante e após a vacinação em massa?</div>
+      <span class="qa-arrow">&#8964;</span>
+    </div>
+    <div class="qa-body">
+      <p class="qa-answer">O CFR (Case Fatality Rate = mortes ÷ casos × 100) mede quanto da doença era fatal em cada fase. A queda foi drástica com o avanço da vacinação.</p>
+      <table class="cfr-table">
+        <thead>
+          <tr><th>Fase</th><th>Período</th><th>CFR</th><th>% Vacinados</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="fase">Pré-Pandemia</td><td>antes fev/2020</td><td class="cfr-val">—</td><td class="cfr-val">0%</td></tr>
+          <tr><td class="fase">1ª Onda</td><td>mar–dez 2020</td><td class="cfr-val" style="color:var(--accent2);">2,9%</td><td class="cfr-val">0%</td></tr>
+          <tr><td class="fase">2ª Onda (Gama)</td><td>jan–jul 2021</td><td class="cfr-val" style="color:var(--accent2);">2,9%</td><td class="cfr-val">~15%</td></tr>
+          <tr><td class="fase">Vacinação em Massa</td><td>ago–dez 2021</td><td class="cfr-val" style="color:var(--accent3);">2,7%</td><td class="cfr-val">~66%</td></tr>
+          <tr><td class="fase">Ômicron</td><td>jan–jun 2022</td><td class="cfr-val" style="color:var(--accent);">0,5%</td><td class="cfr-val">~74%</td></tr>
+          <tr><td class="fase">Fase Endêmica</td><td>jul 2022+</td><td class="cfr-val" style="color:var(--accent);">0,6%</td><td class="cfr-val">~86%</td></tr>
+        </tbody>
+      </table>
+      <div class="insight">A taxa de mortalidade caiu quase 5x — de 2,9% na 2ª Onda para 0,5% na Ômicron. Com mais vacinados, a doença matava muito menos mesmo quando os casos dispararam.</div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="qa-card" id="q5">
+    <div class="qa-header" onclick="toggle('q5')">
+      <div class="qa-num" style="background:rgba(0,212,160,0.12);color:var(--accent);">05</div>
+      <div class="qa-question">Qual foi o pico máximo de casos, o total de mortes e a cobertura vacinal final no Brasil?</div>
+      <span class="qa-arrow">&#8964;</span>
+    </div>
+    <div class="qa-body">
+      <p class="qa-answer">Os indicadores-chave consolidados de toda a série histórica — de janeiro de 2020 a agosto de 2024:</p>
+      <div class="stat-grid">
+        <div class="stat-box"><span class="val" style="color:var(--accent4);">37,5M</span><div class="lbl">Total de casos</div><div class="sub">acumulados</div></div>
+        <div class="stat-box"><span class="val" style="color:var(--accent2);">702.116</span><div class="lbl">Total de mortes</div><div class="sub">acumuladas</div></div>
+        <div class="stat-box"><span class="val" style="color:var(--accent3);">1,28M</span><div class="lbl">Pico diário</div><div class="sub">30/01/2022</div></div>
+        <div class="stat-box"><span class="val" style="color:var(--accent);">88,1%</span><div class="lbl">Cobertura vacinal</div><div class="sub">ao final do período</div></div>
+        <div class="stat-box"><span class="val">1.673</span><div class="lbl">Dias cobertos</div><div class="sub">jan/2020 – ago/2024</div></div>
+      </div>
+      <div class="insight">O pico de casos ocorreu na Ômicron (30/jan/2022), com 1,28 milhão de casos em um único dia. Apesar do volume recorde, as mortes nessa fase foram muito menores do que na 2ª Onda — evidência direta do impacto da vacinação.</div>
+    </div>
+  </div>
+
+  <div class="section-title">performance do data warehouse</div>
+  <div class="stat-grid" style="margin-bottom:2rem;">
+    <div class="stat-box"><span class="val" style="color:var(--accent2);">0,0338s</span><div class="lbl">Sem otimização</div><div class="sub">fact_covid + JOINs (~395k linhas)</div></div>
+    <div class="stat-box"><span class="val" style="color:var(--accent);">0,0011s</span><div class="lbl">Com otimização</div><div class="sub">agg_monthly_brazil (~57 linhas)</div></div>
+    <div class="stat-box"><span class="val" style="color:var(--accent5);">~31×</span><div class="lbl">Ganho em tempo</div><div class="sub">redução de 5.300× nas linhas</div></div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p>FATEC Jundiaí — Deputado Ary Fossen &nbsp;·&nbsp; Banco e Armazém de Dados em Ciências de Dados &nbsp;·&nbsp; 2025</p>
+    <p style="margin-top:6px;">Dados: <a href="https://github.com/owid/covid-19-data" target="_blank">Our World in Data — COVID-19 Dataset</a></p>
+  </div>
+</footer>
+
+<script>
+  function toggle(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-# 🦠 Data Warehouse COVID-19 — Brasil (2020–2024)
+# 🦠 Data Warehouse COVID-19 - Brasil (2020–2024)
 
 > Projeto acadêmico desenvolvido na disciplina **Banco e Armazém de Dados em Ciências de Dados** — FATEC Jundiaí (Deputado Ary Fossen)
 
@@ -146,13 +146,13 @@ python visualizacoes/gerar_graficos.py
 
 ---
 
-##  Principais Resultados — Brasil
+##  Principais Resultados - Brasil
 
 | Indicador | Valor |
 |-----------|-------|
 | Total de casos acumulados | ~37,5 milhões |
 | Total de mortes acumuladas | 702.116 |
-| Pico diário de casos | 1.283.024 (30/01/2022 — Ômicron) |
+| Pico diário de casos | 1.283.024 (30/01/2022 - Ômicron) |
 | Cobertura vacinal final | 88,1% |
 | Período coberto | 05/01/2020 a 04/08/2024 (1.673 dias) |
 

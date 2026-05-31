@@ -171,7 +171,7 @@ python visualizacoes/gerar_graficos.py
 
 ##  Informações Acadêmicas
 
-- **Instituição:** FATEC Jundiaí — Deputado Ary Fossen
+- **Instituição:** FATEC Jundiaí - Deputado Ary Fossen
 - **Curso:** Tecnologia em Ciência de Dados
 - **Disciplina:** Banco e Armazém de Dados em Ciências de Dados
 - **Ano:** 2026

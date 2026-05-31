@@ -1,6 +1,8 @@
 # 🦠 Data Warehouse COVID-19 — Brasil (2020–2024)
 
-> Projeto acadêmico de Data Warehouse desenvolvido na disciplina **Banco e Armazém de Dados em Ciências de Dados** — FATEC Jundiaí (Deputado Ary Fossen)
+> Projeto acadêmico desenvolvido na disciplina **Banco e Armazém de Dados em Ciências de Dados** — FATEC Jundiaí (Deputado Ary Fossen)
+
+## 🔗 [Ver painel de resultados analíticos →](https://SEU-USUARIO.github.io/projeto-dw-covid19)
 
 ---
 
@@ -15,7 +17,7 @@
 
 ---
 
-## Sobre o Projeto
+##  Sobre o Projeto
 
 Este projeto implementa um **Data Warehouse completo** para análise da pandemia de COVID-19 no Brasil, utilizando dados públicos da [Our World in Data (OWID)](https://github.com/owid/covid-19-data/tree/master/public/data).
 
@@ -37,6 +39,7 @@ CSV bruto (429k linhas)
 
 ```
 projeto-dw-covid19/
+├── index.html                       ← página de resultados (GitHub Pages)
 ├── data/
 │   └── owid-covid-data.csv          ← baixar separadamente (ver instruções)
 ├── scripts/
@@ -53,12 +56,11 @@ projeto-dw-covid19/
 │   ├── grafico_3_heatmap_mortalidade.png
 │   └── grafico_4_dashboard_brasil.png
 ├── docs/
-│   ├── dicionario_dados.md
-│   └── README.md
+│   └── dicionario_dados.md
 └── relatorio_final_dw_covid19.docx
 ```
 
-> ⚠️ O arquivo `owid-covid-data.csv` (~94MB) e o banco `covid_dw.duckdb` **não estão no repositório** (ver `.gitignore`). Baixe o CSV conforme instruções abaixo.
+> ⚠️ O arquivo `owid-covid-data.csv` (~94MB) e o banco `covid_dw.duckdb` **não estão no repositório**. Baixe o CSV conforme instruções abaixo.
 
 ---
 
@@ -107,29 +109,19 @@ projeto-dw-covid19/
 
 ### 1. Baixar o dataset
 
-```bash
-# Baixar o CSV da Our World in Data:
-# https://github.com/owid/covid-19-data/blob/master/public/data/owid-covid-data.csv
-# Salvar em: data/owid-covid-data.csv
+```
+https://github.com/owid/covid-19-data/blob/master/public/data/owid-covid-data.csv
+Salvar em: data/owid-covid-data.csv
 ```
 
-### 2. Editar o caminho do CSV
-
-No arquivo `scripts/00_staging.sql`, localize e ajuste o caminho:
-
-```sql
-FROM read_csv_auto('data/owid-covid-data.csv', ...)
-```
-
-### 3. Abrir o DuckDB
+### 2. Abrir o DuckDB
 
 ```powershell
-# No terminal, dentro da pasta do projeto:
 cd C:\caminho\para\projeto-dw-covid19
 duckdb covid_dw.duckdb
 ```
 
-### 4. Executar os scripts em ordem
+### 3. Executar os scripts em ordem
 
 ```sql
 .read scripts/00_staging.sql
@@ -140,12 +132,12 @@ duckdb covid_dw.duckdb
 .read scripts/05_performance.sql
 ```
 
-> ⚠️ Se rodar o script 03 mais de uma vez, execute antes:
+> ⚠️ Se rodar o script 03 mais de uma vez:
 > ```sql
 > DROP SEQUENCE IF EXISTS seq_location_key;
 > ```
 
-### 5. Gerar os gráficos
+### 4. Gerar os gráficos
 
 ```bash
 pip install duckdb plotly pandas seaborn matplotlib
@@ -154,17 +146,7 @@ python visualizacoes/gerar_graficos.py
 
 ---
 
-## Perguntas Analíticas Respondidas
-
-1. **Como evoluíram os casos e mortes no Brasil?** — É possível identificar as ondas da pandemia?
-2. **Quais foram os 10 meses mais letais no Brasil?**
-3. **Como a vacinação se relaciona com a queda de casos e mortes?** — Cruzamento mês a mês
-4. **Como se comportou a taxa de mortalidade (CFR) por fase?** — Antes, durante e após a vacinação em massa
-5. **Quais são os KPIs finais da pandemia no Brasil?** — Pico, total de mortes, cobertura vacinal
-
----
-
-## Principais Resultados — Brasil
+##  Principais Resultados — Brasil
 
 | Indicador | Valor |
 |-----------|-------|
@@ -174,47 +156,22 @@ python visualizacoes/gerar_graficos.py
 | Cobertura vacinal final | 88,1% |
 | Período coberto | 05/01/2020 a 04/08/2024 (1.673 dias) |
 
-### Meses mais letais (Segunda Onda — variante Gama)
+---
 
-| # | Mês | Mortes |
-|---|-----|--------|
-| 1 | Abril/2021 | 79.304 |
-| 2 | Maio/2021 | 72.629 |
-| 3 | Março/2021 | 54.277 |
+##  Performance
+
+| Abordagem | Tabela | Linhas | Tempo |
+|-----------|--------|--------|-------|
+| Sem otimização | `fact_covid` + JOINs | ~395.000 | 0,0338s |
+| Com otimização | `agg_monthly_brazil` | ~57 | 0,0011s |
+
+~31× mais rápido em tempo · redução de ~5.300× nas linhas percorridas
 
 ---
 
-## Otimização de Performance
-
-| Abordagem | Tabela | Linhas percorridas | Tempo |
-|-----------|--------|--------------------|-------|
-| Sem otimização | `fact_covid` + JOINs | ~395.000 | 0.0338s |
-| Com otimização | `agg_monthly_brazil` | ~57 | 0.0011s |
-
-**Resultado:** ~31x mais rápido em tempo de execução, com redução de ~5.300x no número de linhas percorridas.
-
----
-
-## Decisões Técnicas
-
-- **DuckDB** — banco de dados analítico embarcado, sem necessidade de servidor. Processa o CSV de 429k linhas diretamente via SQL.
-- **SCD Type 2** em `dim_location` — rastreabilidade histórica de mudanças nos atributos dos países.
-- **Tabela pré-agregada** `agg_monthly_brazil` — materializa métricas mensais do Brasil para acelerar consultas frequentes.
-- **Fases da pandemia** como dimensão — permite análises de cohort por período epidemiológico.
-
----
-
-## Dataset
-
-- **Fonte:** [Our World in Data — COVID-19 Dataset](https://github.com/owid/covid-19-data)
-- **Arquivo:** `owid-covid-data.csv`
-- **Cobertura:** 255 países/regiões | 2020-01-01 a 2024-08-14 | 429.435 linhas | 67 colunas
-
----
-
-## Informações Acadêmicas
+##  Informações Acadêmicas
 
 - **Instituição:** FATEC Jundiaí — Deputado Ary Fossen
 - **Curso:** Tecnologia em Ciência de Dados
 - **Disciplina:** Banco e Armazém de Dados em Ciências de Dados
-- **Ano:** 2025
+- **Ano:** 2026

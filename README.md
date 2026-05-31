@@ -15,7 +15,7 @@
 
 ---
 
-## 📌 Sobre o Projeto
+## Sobre o Projeto
 
 Este projeto implementa um **Data Warehouse completo** para análise da pandemia de COVID-19 no Brasil, utilizando dados públicos da [Our World in Data (OWID)](https://github.com/owid/covid-19-data/tree/master/public/data).
 
@@ -62,7 +62,7 @@ projeto-dw-covid19/
 
 ---
 
-## 🗺️ Modelo Estrela
+##  Modelo Estrela
 
 ```
               dim_date
@@ -154,7 +154,7 @@ python visualizacoes/gerar_graficos.py
 
 ---
 
-## 📊 Perguntas Analíticas Respondidas
+## Perguntas Analíticas Respondidas
 
 1. **Como evoluíram os casos e mortes no Brasil?** — É possível identificar as ondas da pandemia?
 2. **Quais foram os 10 meses mais letais no Brasil?**
@@ -164,7 +164,7 @@ python visualizacoes/gerar_graficos.py
 
 ---
 
-## 📈 Principais Resultados — Brasil
+## Principais Resultados — Brasil
 
 | Indicador | Valor |
 |-----------|-------|
@@ -184,7 +184,7 @@ python visualizacoes/gerar_graficos.py
 
 ---
 
-## ⚡ Otimização de Performance
+## Otimização de Performance
 
 | Abordagem | Tabela | Linhas percorridas | Tempo |
 |-----------|--------|--------------------|-------|
@@ -195,7 +195,7 @@ python visualizacoes/gerar_graficos.py
 
 ---
 
-## 🔧 Decisões Técnicas
+## Decisões Técnicas
 
 - **DuckDB** — banco de dados analítico embarcado, sem necessidade de servidor. Processa o CSV de 429k linhas diretamente via SQL.
 - **SCD Type 2** em `dim_location` — rastreabilidade histórica de mudanças nos atributos dos países.
@@ -204,7 +204,7 @@ python visualizacoes/gerar_graficos.py
 
 ---
 
-## 📚 Dataset
+## Dataset
 
 - **Fonte:** [Our World in Data — COVID-19 Dataset](https://github.com/owid/covid-19-data)
 - **Arquivo:** `owid-covid-data.csv`
@@ -212,7 +212,7 @@ python visualizacoes/gerar_graficos.py
 
 ---
 
-## 🏫 Informações Acadêmicas
+## Informações Acadêmicas
 
 - **Instituição:** FATEC Jundiaí — Deputado Ary Fossen
 - **Curso:** Tecnologia em Ciência de Dados
